@@ -25,7 +25,7 @@ config:
       save_format: safetensors
       push_to_hub: false
     datasets:
-    - folder_path: /home/envy/ai-toolkit/datasets/lewd
+    - folder_path: /home/envy/ai-toolkit/datasets/dataset1
       mask_path: null
       mask_min_value: 0.1
       default_caption: ''
@@ -76,12 +76,8 @@ config:
       width: 800
       height: 1200
       prompts:
-      - 'A digital illustration of a goth slim orc girl with a narrow waist and wide
-        hips in an abandoned building. She is completely naked.  Her pubic area is
-        shaved, revealing her smooth vagina in sharp detail.  She is squeezing her
-        breasts with her hands and her head is tilted back.  She has blonde hair. '
-      - A naked woman with a narrow waist and flared hips standing in a bedroom.  Her
-        pubic area is shaved, revealing her smooth vagina.
+      - 'A chair in the shape of an avocado'
+      - 'A raccoon skateboarding on the moon'
       neg: blurry
       seed: 42
       walk_seed: true
