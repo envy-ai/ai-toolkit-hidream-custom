@@ -183,6 +183,12 @@ class CustomFlowMatchEulerDiscreteScheduler(FlowMatchEulerDiscreteScheduler):
             self.sigmas = sigmas
 
             self.timesteps = timesteps.to(device=device)
+            
+            # Calculate alphas and alphas_cumprod for min_snr_gamma
+            alphas = 1.0 - self.sigmas**2
+            # cumulative product along the noise schedule
+            self.alphas_cumprod = torch.cumprod(alphas, dim=0)
+            self.betas = 1.0 - alphas
             return timesteps
 
         elif timestep_type == 'lognorm_blend':

@@ -1,0 +1,94 @@
+job: extension
+config:
+  name: hidream_dora_with_snr_no_t5
+  process:
+  - type: ui_trainer
+    training_folder: /home/envy/ai-toolkit/output
+    sqlite_db_path: /home/envy/ai-toolkit/aitk_db.db
+    device: cuda
+    trigger_word: null
+    performance_log_every: 10
+    network:
+      type: dora
+      linear: 16
+      linear_alpha: 16
+      lokr_full_rank: true
+      lokr_factor: -1
+      network_kwargs:
+        ignore_if_contains:
+        - ff_i.experts
+        - ff_i.gate
+    save:
+      dtype: bf16
+      save_every: 50
+      max_step_saves_to_keep: 100
+      save_format: safetensors
+      push_to_hub: false
+    datasets:
+    - folder_path: /home/envy/ai-toolkit/datasets/lewd
+      mask_path: null
+      mask_min_value: 0.1
+      default_caption: ''
+      caption_ext: txt
+      caption_dropout_rate: 0.05
+      cache_latents_to_disk: true
+      is_reg: false
+      network_weight: 1
+      resolution:
+      - 512
+      - 768
+      - 960
+    train:
+      batch_size: 4
+      bypass_guidance_embedding: false
+      steps: 3000
+      gradient_accumulation: 1
+      train_unet: true
+      train_text_encoder: false
+      gradient_checkpointing: true
+      noise_scheduler: flowmatch
+      optimizer: prodigy
+      timestep_type: shift
+      content_or_style: balanced
+      base_shift: 0.5
+      max_shift: 2
+      min_snr_gamma: 5
+      optimizer_params:
+        weight_decay: 0
+      unload_text_encoder: false
+      lr: 1
+      ema_config:
+        use_ema: false
+        ema_decay: 0.99
+      dtype: bf16
+      diff_output_preservation: false
+      diff_output_preservation_multiplier: 1
+      diff_output_preservation_class: person
+    model:
+      name_or_path: HiDream-ai/HiDream-I1-Full
+      quantize: true
+      quantize_te: true
+      arch: hidream
+      low_vram: false
+    sample:
+      sampler: flowmatch
+      sample_every: 50
+      width: 800
+      height: 1200
+      prompts:
+      - 'A digital illustration of a goth slim orc girl with a narrow waist and wide
+        hips in an abandoned building. She is completely naked.  Her pubic area is
+        shaved, revealing her smooth vagina in sharp detail.  She is squeezing her
+        breasts with her hands and her head is tilted back.  She has blonde hair. '
+      - A naked woman with a narrow waist and flared hips standing in a bedroom.  Her
+        pubic area is shaved, revealing her smooth vagina.
+      neg: blurry
+      seed: 42
+      walk_seed: true
+      guidance_scale: 4
+      sample_steps: 25
+      num_frames: 1
+      fps: 1
+meta:
+  name: hidream_dora_with_snr_no_t5
+  version: '1.0'

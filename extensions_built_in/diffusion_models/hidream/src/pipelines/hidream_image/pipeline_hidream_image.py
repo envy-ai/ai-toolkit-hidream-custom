@@ -164,7 +164,13 @@ class HiDreamImagePipeline(DiffusionPipeline, FromSingleFileMixin):
         device = device or self._execution_device
         dtype = dtype or self.text_encoder_3.dtype
 
-        prompt = [prompt] if isinstance(prompt, str) else prompt
+        # t5 is bad.  We're going to send it a blank prompt instead.  Llama
+        # does all the heavy lifting.
+        if isinstance(prompt, str):
+            prompt = [""]
+        else:
+            prompt = ["" for _ in range(len(prompt))]
+        
         batch_size = len(prompt)
 
         text_inputs = self.tokenizer_3(
@@ -208,7 +214,12 @@ class HiDreamImagePipeline(DiffusionPipeline, FromSingleFileMixin):
         device = device or self._execution_device
         dtype = dtype or text_encoder.dtype
 
-        prompt = [prompt] if isinstance(prompt, str) else prompt
+        # CLIP isn't very smart.  We're going to send it a blank prompt instead.
+        if isinstance(prompt, str):
+            prompt = [""]
+        else:
+            prompt = ["" for _ in range(len(prompt))]
+            
         batch_size = len(prompt)
 
         text_inputs = tokenizer(
@@ -243,10 +254,13 @@ class HiDreamImagePipeline(DiffusionPipeline, FromSingleFileMixin):
         self,
         prompt: Union[str, List[str]] = None,
         num_images_per_prompt: int = 1,
-        max_sequence_length: int = 128,
+        max_sequence_length: int = 384,
         device: Optional[torch.device] = None,
         dtype: Optional[torch.dtype] = None,
     ):
+        # Override the max_sequence_length to 384 for Llama3
+        max_sequence_length = 384
+        
         device = device or self._execution_device
         dtype = dtype or self.text_encoder_4.dtype
 
